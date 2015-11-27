@@ -1,0 +1,23 @@
+<script>
+  new_items = [];
+  
+  function add_list_element() {
+      list = document.getElementById("list");
+      item_node = document.createElement("li");
+      item = document.getElementById("text_entry").value;
+      item_node.innerHTML = item;
+      list.appendChild(item_node);
+      new_items.push(item);
+  }
+</script>
+<ul id="list">
+  {% for item in items %}
+  <li>{{ item.text }}</li>
+  {% endfor %}
+</ul>
+<input type="text" id="text_entry">
+<form action="{% url 'list' %}" method="POST">
+  {% csrf_token %}
+  <input type="button" value="add" id="add" onclick="add_list_element();">
+  <input type="submit" value="save" id="save">
+</form>
