@@ -24,11 +24,17 @@ class MySeleniumTests(StaticLiveServerTestCase):
     def test_xss(self):
         for attackstring in XSS_STRINGS:
             self.selenium.get('%s%s' % (self.live_server_url, '/list/'))
-            numbuttons = len(self.selenium.find_elements(By.XPATH, "//input[@type='button' or @type='submit']"))
+            numbuttons = len(self.selenium.find_elements(By.XPATH, "//*[@onclick]"))
             for i in range(numbuttons):
+                try:
+                    alert = self.selenium.switch_to_alert()
+                    alert.accept()
+                except:
+                    pass
                 self.selenium.get('%s%s' % (self.live_server_url, '/list/'))
-                buttons = self.selenium.find_elements(By.XPATH, "//input[@type='button' or @type='submit']")
-                txtfields = self.selenium.find_elements(By.XPATH, "//input[@type='text']")
+                buttons = self.selenium.find_elements(By.XPATH, "//*[@onclick]")
+                txtfields = self.selenium.find_elements(By.XPATH, "//input[@type='text']") + \
+                    self.selenium.find_elements(By.XPATH, "//textarea")
                 for field in txtfields:
                     field.send_keys(attackstring)
                 buttons[i].click()
