@@ -47,5 +47,15 @@
       <input type="button" value="add" onclick="add_list_element('p');">
       <input type="submit" value="save" id="save">
     </form>
+
+    <h2>Onclick submit</h2>
+    <input type="text" id="onclick"></p>
+    <form action="{% url 'list' %}" method="POST">
+      {% csrf_token %}
+      <span>
+        <p onclick="add_list_element('onclick');">add</p>
+        <input type="submit" value="save" id="save">
+      </span>
+    </form>
 </html>
   
