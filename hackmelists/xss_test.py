@@ -8,7 +8,8 @@ import time
 import json
 import os
 
-XSS_STRINGS = ['<image src="doesnotexist" onerror=alert("HACKED12345")></img>']
+with open('attackstrings.txt') as f:
+    XSS_STRINGS = f.read().splitlines()
 
 class MySeleniumTests(StaticLiveServerTestCase):
 
