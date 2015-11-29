@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import ListItem
+from urlparse import parse_qs
 
 def index(request):
     items = ListItem.objects.order_by('id')
@@ -21,3 +22,11 @@ def content_editable(request):
 def onclick(request):
     items = ListItem.objects.order_by('id')
     return render(request, 'lists/list.html', {'items':items, 'type':'onclick'})
+
+def query(request):
+    items = ListItem.objects.order_by('id')
+    try:
+        name = parse_qs(request.META['QUERY_STRING'])['name'][0]
+    except KeyError:
+        name = "Default"
+    return render(request, 'lists/query.html', {'items':items, 'name': name})

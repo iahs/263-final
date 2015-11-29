@@ -11,6 +11,8 @@ import os
 with open('attackstrings.txt') as f:
     XSS_STRINGS = f.read().splitlines()
 
+
+
 class MySeleniumTests(StaticLiveServerTestCase):
 
     @classmethod
@@ -20,9 +22,17 @@ class MySeleniumTests(StaticLiveServerTestCase):
 
     @classmethod
     def tearDownClass(cls):
+        cls.selenium.refresh()
         time.sleep(5)
         cls.selenium.quit()
         super(MySeleniumTests, cls).tearDownClass()
+
+    def clear_alert(self):
+        try:
+            alert = self.selenium.switch_to_alert()
+            alert.accept()
+        except:
+            pass
 
     def test_xss(self):
 
@@ -32,14 +42,34 @@ class MySeleniumTests(StaticLiveServerTestCase):
 
         for url in data['url']:
             for attackstring in XSS_STRINGS:
+                print "On URL:", url, "  Testing attack string:", attackstring
+                print
+                for query in data['query']:
+                    self.clear_alert()
+                    self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/?' + query + '=' + attackstring))
+                    try:
+                        WebDriverWait(self.selenium, 1).until(EC.alert_is_present(),
+                                                       'Timed out waiting for PA creation ' +
+                                                       'confirmation popup to appear.')
+
+                        alert = self.selenium.switch_to_alert()
+                        if alert.text == "XSS":
+                            alert.accept()
+                            print "VULNERABILITY FOUND"
+                            print "To attack string:", attackstring
+                            print "On query string:",  query
+                            print "On URL:", url
+                            print
+                        else:
+                            alert.accept()
+                    except TimeoutException:
+                        pass
+                    self.selenium.refresh()
+                self.clear_alert()
                 self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/'))
                 numbuttons = len(self.selenium.find_elements(By.XPATH, "//*[@onclick]"))
                 for i in range(numbuttons):
-                    try:
-                        alert = self.selenium.switch_to_alert()
-                        alert.accept()
-                    except:
-                        pass
+                    self.clear_alert()
                     self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/'))
                     buttons = self.selenium.find_elements(By.XPATH, "//*[@onclick]")
                     txtfields = self.selenium.find_elements(By.XPATH, "//input[@type='text']") + \
@@ -56,11 +86,7 @@ class MySeleniumTests(StaticLiveServerTestCase):
                         alert = self.selenium.switch_to_alert()
                         alert.accept()
                         for j in range(numfields):
-                            try:
-                                alert = self.selenium.switch_to_alert()
-                                alert.accept()
-                            except:
-                                pass
+                            self.clear_alert()
                             self.selenium.refresh()
                             self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/'))
                             buttons = self.selenium.find_elements(By.XPATH, "//*[@onclick]")
@@ -74,20 +100,22 @@ class MySeleniumTests(StaticLiveServerTestCase):
                                                                'confirmation popup to appear.')
 
                                 alert = self.selenium.switch_to_alert()
-                                if alert.text == "HACKED12345":
+                                if alert.text == "XSS":
                                     alert.accept()
                                     print "VULNERABILITY FOUND"
                                     print "To attack string:", attackstring
                                     print "On button of type:", buttons[i].tag_name, "  At point:", buttons[i].location, "  Showing text (if any):", buttons[i].text
                                     print "On textfield of type:", txtfields[j].tag_name, "  At point:", txtfields[j].location, "  Showing text (if any):", txtfields[j].text
+                                    print "On URL:", url
                                     print
                                 else:
                                     alert.accept()
                             except TimeoutException:
                                 pass
                     except TimeoutException:
-                        print "no alert"
-                        print
+                        #print "no alert"
+                        #print
+                        pass
                     self.selenium.refresh()
 
 
