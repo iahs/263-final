@@ -1,61 +1,14 @@
 <!DOCTYPE html>
-
 <html>
-  <script>
-  new_items = [];
-  
-  function add_list_element(id) {
-      list = document.getElementById("list");
-      item_node = document.createElement("li");
-      item = (id == "p") ? document.getElementById(id).innerHTML : document.getElementById(id).value;
-      item_node.innerHTML = item;
-      list.appendChild(item_node);
-      new_items.push(item);
-  }
-  </script>
   <head>
-    <title>Todo List</title>
+    <title>index</title>
   </head>
   <body>
-    <h1>263TODO List</h1>
-    <ul id="list">
-      {% for item in items %}
-      <li>{{ item.text }}</li>
-      {% endfor %}
+    <ul>
+      <li><a href="{% url 'text_box' %}">text box</a></li>
+      <li><a href="{% url 'text_area' %}">text area</a></li>
+      <li><a href="{% url 'content_editable' %}">contenteditable</a></li>
+      <li><a href="{% url 'onclick' %}">onclick</a></li>
     </ul>
-    
-    <h2>Textbox input</h2>
-    <input type="text" id="text">
-    <form action="{% url 'list' %}" method="POST">
-      {% csrf_token %}
-      <input type="button" value="add" onclick="add_list_element('text');">
-      <input type="submit" value="save" id="save">
-    </form>
-
-    <h2>Textarea input</h2>
-    <textarea rows="4" cols="50" id="text_area"></textarea>
-    <form action="{% url 'list' %}" method="POST">
-      {% csrf_token %}
-      <input type="button" value="add" onclick="add_list_element('text_area');">
-      <input type="submit" value="save" id="save">
-    </form>
-
-    <h2>Contenteditable input</h2>
-    <p contenteditable="true" id="p"></p>
-    <form action="{% url 'list' %}" method="POST">
-      {% csrf_token %}
-      <input type="button" value="add" onclick="add_list_element('p');">
-      <input type="submit" value="save" id="save">
-    </form>
-
-    <h2>Onclick submit</h2>
-    <input type="text" id="onclick"></p>
-    <form action="{% url 'list' %}" method="POST">
-      {% csrf_token %}
-      <span>
-        <p onclick="add_list_element('onclick');">add</p>
-        <input type="submit" value="save" id="save">
-      </span>
-    </form>
+  </body>
 </html>
-  

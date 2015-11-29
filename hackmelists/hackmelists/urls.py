@@ -18,5 +18,9 @@ from django.conf.urls import url
 from lists import views
 
 urlpatterns = [
-    url(r'^list/', views.list, name='list'),
+    url(r'^list/$', views.index, name='index'),
+    url(r'^list/text_box/$', views.text_box, name='text_box'),
+    url(r'^list/text_area/$', views.text_area, name='text_area'),
+    url(r'^list/content_editable/$', views.content_editable, name='content_editable'),
+    url(r'^list/onclick/$', views.onclick, name='onclick'),
 ]
