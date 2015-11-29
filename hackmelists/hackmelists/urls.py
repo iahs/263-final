@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^list/text_area/$', views.text_area, name='text_area'),
     url(r'^list/content_editable/$', views.content_editable, name='content_editable'),
     url(r'^list/onclick/$', views.onclick, name='onclick'),
+    url(r'^query/$', views.query, name='query'),
 ]
