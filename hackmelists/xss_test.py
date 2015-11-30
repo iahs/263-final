@@ -44,27 +44,28 @@ class MySeleniumTests(StaticLiveServerTestCase):
             for attackstring in XSS_STRINGS:
                 print "On URL:", url, "  Testing attack string:", attackstring
                 print
-                for query in data['query']:
-                    self.clear_alert()
-                    self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/?' + query + '=' + attackstring))
-                    try:
-                        WebDriverWait(self.selenium, 1).until(EC.alert_is_present(),
-                                                       'Timed out waiting for PA creation ' +
-                                                       'confirmation popup to appear.')
+                if data['query'] is not None:
+                    for query in data['query']:
+                        self.clear_alert()
+                        self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/?' + query + '=' + attackstring))
+                        try:
+                            WebDriverWait(self.selenium, 1).until(EC.alert_is_present(),
+                                                           'Timed out waiting for PA creation ' +
+                                                           'confirmation popup to appear.')
 
-                        alert = self.selenium.switch_to_alert()
-                        if alert.text == "XSS":
-                            alert.accept()
-                            print "VULNERABILITY FOUND"
-                            print "To attack string:", attackstring
-                            print "On query string:",  query
-                            print "On URL:", url
-                            print
-                        else:
-                            alert.accept()
-                    except TimeoutException:
-                        pass
-                    self.selenium.refresh()
+                            alert = self.selenium.switch_to_alert()
+                            if alert.text == "XSS":
+                                alert.accept()
+                                print "VULNERABILITY FOUND"
+                                print "To attack string:", attackstring
+                                print "On query string:",  query
+                                print "On URL:", url
+                                print
+                            else:
+                                alert.accept()
+                        except TimeoutException:
+                            pass
+                        self.selenium.refresh()
                 self.clear_alert()
                 self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/'))
                 numbuttons = len(self.selenium.find_elements(By.XPATH, "//*[@onclick]"))
