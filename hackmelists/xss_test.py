@@ -7,9 +7,14 @@ from selenium.webdriver.common.by import By
 import time
 import json
 import os
+import sys
 
-with open('attackstrings.txt') as f:
-    XSS_STRINGS = f.read().splitlines()
+try:
+    with open('attackstrings.txt') as f:
+        XSS_STRINGS = f.read().splitlines()
+except IOError:
+    print "attackstrings.txt file required"
+    sys.exit(1)
 
 
 
@@ -49,7 +54,7 @@ class MySeleniumTests(StaticLiveServerTestCase):
                 if data['query'] is not None:
                     for query in data['query']:
                         self.clear_alert()
-                        self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/?' + query + '=' + attackstring))
+                        self.selenium.get('%s%s' % (self.live_server_url, url + '?' + query + '=' + attackstring))
                         try:
                             WebDriverWait(self.selenium, 1).until(EC.alert_is_present(),
                                                            'Timed out waiting for PA creation ' +
