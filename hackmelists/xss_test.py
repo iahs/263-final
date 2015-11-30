@@ -41,6 +41,8 @@ class MySeleniumTests(StaticLiveServerTestCase):
         os.remove('temp.json')
 
         for url in data['url']:
+            if url != '/':
+                url = '/' + url + '/'
             for attackstring in XSS_STRINGS:
                 print "On URL:", url, "  Testing attack string:", attackstring
                 print
@@ -67,12 +69,13 @@ class MySeleniumTests(StaticLiveServerTestCase):
                             pass
                         self.selenium.refresh()
                 self.clear_alert()
-                self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/'))
-                numbuttons = len(self.selenium.find_elements(By.XPATH, "//*[@onclick]"))
+                self.selenium.get('%s%s' % (self.live_server_url, url))
+                numbuttons = len(self.selenium.find_elements(By.XPATH, "//*[@onclick]")) + len(self.selenium.find_elements(By.XPATH, "//*[@type='submit']"))
                 for i in range(numbuttons):
                     self.clear_alert()
-                    self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/'))
-                    buttons = self.selenium.find_elements(By.XPATH, "//*[@onclick]")
+                    self.selenium.get('%s%s' % (self.live_server_url, url))
+                    buttons = self.selenium.find_elements(By.XPATH, "//*[@onclick]") + \
+                        self.selenium.find_elements(By.XPATH, "//*[@type='submit']")
                     txtfields = self.selenium.find_elements(By.XPATH, "//input[@type='text']") + \
                         self.selenium.find_elements(By.XPATH, "//textarea")
                     numfields = len(txtfields)
@@ -88,12 +91,14 @@ class MySeleniumTests(StaticLiveServerTestCase):
                         alert.accept()
                         for j in range(numfields):
                             self.clear_alert()
-                            self.selenium.refresh()
-                            self.selenium.get('%s%s' % (self.live_server_url, '/' + url + '/'))
-                            buttons = self.selenium.find_elements(By.XPATH, "//*[@onclick]")
+                            self.selenium.get('%s%s' % (self.live_server_url, url))
+                            buttons = self.selenium.find_elements(By.XPATH, "//*[@onclick]") + \
+                                self.selenium.find_elements(By.XPATH, "//*[@type='submit']")
                             txtfields = self.selenium.find_elements(By.XPATH, "//input[@type='text']") + \
                                 self.selenium.find_elements(By.XPATH, "//textarea")
                             txtfields[j].send_keys(attackstring)
+                            b_tn, b_l, b_t =  buttons[i].tag_name,  buttons[i].location,  buttons[i].text
+                            t_tn, t_l, t_t = txtfields[j].tag_name, txtfields[j].location, txtfields[j].text
                             buttons[i].click()
                             try:
                                 WebDriverWait(self.selenium, 1).until(EC.alert_is_present(),
@@ -105,8 +110,8 @@ class MySeleniumTests(StaticLiveServerTestCase):
                                     alert.accept()
                                     print "VULNERABILITY FOUND"
                                     print "To attack string:", attackstring
-                                    print "On button of type:", buttons[i].tag_name, "  At point:", buttons[i].location, "  Showing text (if any):", buttons[i].text
-                                    print "On textfield of type:", txtfields[j].tag_name, "  At point:", txtfields[j].location, "  Showing text (if any):", txtfields[j].text
+                                    print "On button of type:", b_tn, "  At point:", b_l, "  Showing text (if any):", b_t
+                                    print "On textfield of type:", t_tn, "  At point:", t_l, "  Showing text (if any):", t_t
                                     print "On URL:", url
                                     print
                                 else:
@@ -117,7 +122,6 @@ class MySeleniumTests(StaticLiveServerTestCase):
                         #print "no alert"
                         #print
                         pass
-                    self.selenium.refresh()
 
 
 if __name__ == '__main__':
