@@ -8,15 +8,27 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+  <style type="text/css">
+    .centered{text-align:center}
+    .centered ul{
+        display:inline-block;
+        text-align:left;
+    }
+  </style>
+  
   <head>
     <title>index</title>
   </head>
   <body>
+    <div class="centered">
+    <h2>Choose an input method</h2>
     <ul>
       <li><a href="{% url 'text_box' %}">text box</a></li>
       <li><a href="{% url 'text_area' %}">text area</a></li>
       <li><a href="{% url 'content_editable' %}">contenteditable</a></li>
       <li><a href="{% url 'onclick' %}">onclick</a></li>
     </ul>
+    </div>
   </body>
 </html>

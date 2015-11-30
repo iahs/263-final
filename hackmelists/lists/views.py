@@ -2,6 +2,15 @@ from django.shortcuts import render
 from .models import ListItem
 from urlparse import parse_qs
 
+def entry(request):
+    return render(request, 'lists/request.html')
+
+def welcome(request):
+    name = "User"
+    if (request.method == 'POST' and request.POST.get("name", False)):
+        name = request.POST["name"]
+    return render(request, 'lists/welcome.html', {'name':name})
+
 def index(request):
     items = ListItem.objects.order_by('id')
     return render(request, 'lists/index.html', {'items':items})

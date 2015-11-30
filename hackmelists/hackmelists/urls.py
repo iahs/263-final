@@ -18,6 +18,8 @@ from django.conf.urls import url
 from lists import views
 
 urlpatterns = [
+    url(r'^$', views.entry, name='entry'),
+    url(r'^welcome/$', views.welcome, name='welcome'),
     url(r'^list/$', views.index, name='index'),
     url(r'^list/text_box/$', views.text_box, name='text_box'),
     url(r'^list/text_area/$', views.text_area, name='text_area'),
