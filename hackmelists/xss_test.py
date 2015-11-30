@@ -82,6 +82,12 @@ class MySeleniumTests(StaticLiveServerTestCase):
                     for field in txtfields:
                         field.send_keys(attackstring)
                     buttons[i].click()
+                    if 'onclick=javascript:alert(String.fromCharCode(88,83,83))' in attackstring:
+                        try:
+                            vul = self.selenium.find_element(By.XPATH, '//*[@class="classhacked12345"]')
+                            vul.click()
+                        except:
+                            pass
                     try:
                         WebDriverWait(self.selenium, 1).until(EC.alert_is_present(),
                                                        'Timed out waiting for PA creation ' +
@@ -100,6 +106,12 @@ class MySeleniumTests(StaticLiveServerTestCase):
                             b_tn, b_l, b_t =  buttons[i].tag_name,  buttons[i].location,  buttons[i].text
                             t_tn, t_l, t_t = txtfields[j].tag_name, txtfields[j].location, txtfields[j].text
                             buttons[i].click()
+                            if 'onclick=javascript:alert(String.fromCharCode(88,83,83))' in attackstring:
+                                try:
+                                    vul = self.selenium.find_element(By.XPATH, '//*[@class="classhacked12345"]')
+                                    vul.click()
+                                except:
+                                    pass
                             try:
                                 WebDriverWait(self.selenium, 1).until(EC.alert_is_present(),
                                                                'Timed out waiting for PA creation ' +

